@@ -1,0 +1,29 @@
+# Binaries
+breeze
+*.exe
+*.bin
+*.out
+
+# Go build artifacts
+*.test
+*.prof
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Ollama data (if any)
+ollama/
