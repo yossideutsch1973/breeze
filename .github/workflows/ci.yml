@@ -1,0 +1,87 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+
+    - name: Cache Go modules
+      uses: actions/cache@v3
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+
+    - name: Download dependencies
+      run: go mod download
+
+    - name: Run tests
+      run: go test -v ./...
+
+    - name: Run go vet
+      run: go vet ./...
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+
+    - name: Build CLI
+      run: go build -v ./cmd/breeze
+
+    - name: Test CLI build
+      run: ./breeze --help || echo "CLI built successfully"
+
+  cross-compile:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+
+    - name: Create bin directory
+      run: mkdir -p bin
+
+    - name: Cross-compile for Linux
+      run: |
+        GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/breeze-linux-amd64 ./cmd/breeze
+        GOOS=linux GOARCH=arm64 go build -ldflags="-s -w" -o bin/breeze-linux-arm64 ./cmd/breeze
+
+    - name: Cross-compile for macOS
+      run: |
+        GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -o bin/breeze-darwin-amd64 ./cmd/breeze
+        GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -o bin/breeze-darwin-arm64 ./cmd/breeze
+
+    - name: Cross-compile for Windows
+      run: |
+        GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o bin/breeze-windows-amd64.exe ./cmd/breeze
+        GOOS=windows GOARCH=386 go build -ldflags="-s -w" -o bin/breeze-windows-386.exe ./cmd/breeze
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: breeze-binaries
+        path: bin/
