@@ -3,6 +3,7 @@ breeze
 *.exe
 *.bin
 *.out
+bin/
 
 # Go build artifacts
 *.test
@@ -27,3 +28,7 @@ Thumbs.db
 
 # Ollama data (if any)
 ollama/
+
+# Cache directories
+.clj-kondo/
+.lsp/
