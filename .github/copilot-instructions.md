@@ -1,188 +1,69 @@
-# Breeze AI Agent Instructions
+# Breeze AI Agent Coding Instructions
 
 ## Project Overview
-Breeze is a Go library for ultra-simple local LLM interactions via Ollama. It provides a 1-line API with zero configuration, focusing on developer experience and simplicity. Features include team collaboration frameworks, document processing, streaming responses, and cross-platform support.
+Breeze is a Go library for ultra-simple local LLM interactions via Ollama, with a focus on developer experience, 1-line APIs, and team collaboration. It auto-manages Ollama, models, and conversation state, and supports document processing, streaming, and cross-platform builds.
 
-## Architecture Patterns
+## Architecture & Key Patterns
+- **Single-file core**: All main logic (APIs, agent framework, document processing) is in `breeze.go`.
+- **Functional options**: All configuration uses options like `WithModel`, `WithTemp`, `WithDocs`, etc.
+- **Global state**: A single `defaultClient` manages Ollama, model selection, and shared context.
+- **Auto-management**: Ollama is started/pulled as needed; models are auto-selected and downloaded.
+- **Team collaboration**: Multi-agent workflows (see `TeamDevCollab`, `Phase`, and `Agent` in `breeze.go`).
+- **Minimal dependencies**: Only Go stdlib and Ollama required for core; advanced examples may use `gorilla/mux` or `go-sqlite3`.
 
-### Core Design Philosophy
-- **Single Responsibility**: Each function (`AI`, `Chat`, `Code`, `Stream`, `Batch`, `TeamDevCollab`) handles one specific use case
-- **Functional Options**: Use `WithModel()`, `WithTemp()`, `WithContext()`, `WithDocs()`, `WithConcise()` for configuration (see `breeze.go:28-45`)
-- **Global State Management**: Single `defaultClient` instance manages Ollama connection, conversation state, and shared knowledge
-- **Auto-Management**: Automatically starts Ollama, pulls models, and selects best available model
-- **Team Collaboration**: Multi-agent workflows with phases, parallel execution, and shared knowledge
+## Developer Workflows
+- **Build**: `make build` (or `go build ./cmd/breeze`)
+- **Test**: `make test` (integration tests require Ollama running; skipped in CI)
+- **Format**: `make fmt`
+- **Cross-compile**: `make cross` or `./build.sh` (outputs to `bin/`)
+- **Run CLI**: `./breeze "prompt"` or `make run ARGS='chat "Hello"'`
 
-### Key Components
-- `breeze.go`: Core library with all public APIs, team collaboration framework, and document processing
-- `cmd/breeze/main.go`: Minimal CLI wrapper (simple command routing)
-- `build.sh`: Cross-platform compilation script with GOOS/GOARCH patterns
-- `examples/`: Comprehensive examples including team development and document processing
-- Minimal dependencies: Go standard library + Ollama (auto-managed) + optional gorilla/mux for advanced features
+## CLI & API Usage
+- CLI commands are routed in `cmd/breeze/main.go` (e.g., `chat`, `code`, `clear`, or default to `AI`).
+- Library usage is always 1-line, e.g.:
+  - `breeze.AI("prompt")`
+  - `breeze.Chat("prompt")`
+  - `breeze.Code("generate code")`
+  - With options: `breeze.AI("prompt", breeze.WithModel("codellama"), breeze.WithDocs("file.pdf"))`
 
-## Critical Workflows
+## Team Collaboration & Agents
+- Define agents with `Agent{Name, Role, Expertise, Personality}`.
+- Use `TeamDevCollab` for multi-agent workflows (see `examples/sw_engineering_collab.go`).
+- Collaboration phases can be parallel or sequential (`IsParallel` in `Phase`), or use composable methods (see `CollaborationMethod`).
+- Progress callbacks: `OnPhaseComplete`, `OnAgentResponse`.
 
-### Building & Distribution
-```bash
-# Single platform build
-go build ./cmd/breeze
+## Model & Document Handling
+- Preferred models: `gpt-oss`, `codellama`, `llama2`, `mistral` (auto-selected, fallback if unavailable).
+- Document processing: `WithDocs` supports PDF, DOCX, TXT (auto-extracts text).
+- Streaming: Use `breeze.Stream` for token-wise output.
 
-# Cross-platform compilation (see build.sh)
-GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/breeze-linux-amd64 ./cmd/breeze
+## Error Handling & Testing
+- Functions return error strings, not panics; errors are user-friendly.
+- Integration tests in `breeze_test.go` require Ollama (use `t.Skip` if not running).
 
-# All platforms at once
-./build.sh
-```
+## File/Directory Reference
+- `breeze.go`: All core logic, APIs, agent/collab framework
+- `cmd/breeze/main.go`: CLI routing
+- `examples/`: Usage patterns, agent workflows, document processing
+- `build.sh`, `Makefile`: Build/test/cross-compile commands
+- `breeze_test.go`: Integration tests
 
-### Development Setup
-1. Install Ollama: https://ollama.ai (auto-managed by library)
-2. Clone repo and build: `go build ./cmd/breeze`
-3. Run: `./breeze "test prompt"` or use library functions directly
+## Project-specific Conventions
+- All new features go in `breeze.go` (single-file core)
+- Use functional options for all config
+- Add CLI support in `cmd/breeze/main.go` if needed
+- Add usage examples in `examples/` for new features
+- Advanced dependencies (mux/sqlite3) only in examples, not core
 
-### Team Collaboration Workflow
+## Example Patterns
 ```go
-// Define specialized agents
-swTeam := []breeze.Agent{
-    {Name: "Alex", Role: "Senior Engineer", Expertise: "Go development"},
-    {Name: "Maria", Role: "Engineer", Expertise: "Data structures"},
-}
-
-// Use TeamDevCollab for complete development cycles
-result := breeze.TeamDevCollab(swTeam, testTeam, projectDescription)
-```
-
-## Code Patterns & Conventions
-
-### API Design
-```go
-// Simple usage (global functions)
-response := breeze.AI("Explain quantum physics")
-breeze.Chat("conversational prompt")
-code := breeze.Code("generate code")
-
-// With functional options
-response := breeze.AI("prompt", breeze.WithModel("codellama"), breeze.WithTemp(0.1))
-response := breeze.AI("prompt", breeze.WithConcise()) // Concise responses with streaming
-response := breeze.AI("prompt", breeze.WithDocs("file.pdf")) // Document processing
+// 1-line API with options
+resp := breeze.AI("Summarize", breeze.WithDocs("file.pdf"), breeze.WithConcise())
 
 // Team collaboration
-results := breeze.TeamDevCollab(swTeam, testTeam, project)
+team := []breeze.Agent{{Name: "Alex", Role: "Engineer"}}
+result := breeze.TeamDevCollab(team, nil, "Build a Go app")
 
 // Streaming
 breeze.Stream("prompt", func(token string) { fmt.Print(token) })
-
-// Batch processing
-results := breeze.Batch([]string{"prompt1", "prompt2"})
 ```
-
-### Model Management
-- **Preferred Models**: `gpt-oss`, `codellama`, `llama2`, `mistral` (in order of preference)
-- **Auto-Pull**: Models are automatically pulled if not available
-- **Smart Selection**: `selectBestModel()` chooses best available model
-- **Code-Specific**: `Code()` function prefers `codellama` when available
-- **Fallback Chain**: Graceful degradation to available models
-
-### Document Processing
-```go
-// Process various file formats
-response := breeze.AI("Summarize this", breeze.WithDocs("document.pdf"))
-response := breeze.AI("Analyze these files", breeze.WithDocs("file1.txt", "file2.docx"))
-
-// Automatic text extraction from:
-// - PDF files (parses text objects between BT/ET)
-// - DOCX files (XML parsing of word/document.xml)
-// - TXT files (direct reading)
-```
-
-### Error Handling
-- **Silent Failures**: Functions return error strings rather than panicking
-- **Graceful Degradation**: Falls back to default model if preferred models unavailable
-- **User-Friendly**: Error messages guide users (e.g., "Please install Ollama")
-- **Non-blocking**: Auto-starts Ollama if not running
-
-### HTTP Integration
-- **Direct API Calls**: Raw HTTP requests to `http://localhost:11434`
-- **JSON Marshaling**: Request/response handled with `encoding/json`
-- **Connection Management**: Auto-detects and starts Ollama if not running
-- **Dual Endpoints**: Uses `/api/generate` for single responses, `/api/chat` for conversations
-
-### Team Collaboration Framework
-```go
-// Agent definition with personality
-agent := breeze.Agent{
-    Name: "Alex",
-    Role: "Senior Engineer",
-    Expertise: "Go development",
-    Personality: "pragmatic and detail-oriented",
-}
-
-// Phase-based workflow
-phases := []breeze.Phase{
-    {
-        Name: "Requirements Analysis",
-        Description: "Analyze requirements",
-        PromptTemplate: "Provide your expert analysis...",
-        IsParallel: true,
-        MaxConcurrency: 4,
-    },
-}
-
-// Parallel execution with shared knowledge
-collab := breeze.NewCollaboration(agents, phases)
-results, _ := collab.Run("Build a task manager")
-```
-
-## Testing Approach
-- **Integration Tests**: Tests require running Ollama (skipped in CI with `t.Skip()`)
-- **Simple Assertions**: Basic non-empty response checks
-- **Mock-Friendly**: Architecture supports dependency injection for testing
-- **Real Environment**: Tests validate actual Ollama integration
-
-## File Organization
-- `breeze.go`: All public APIs, core logic, team collaboration, document processing
-- `cmd/breeze/main.go`: Minimal CLI wrapper with command routing
-- `examples/`: Complete usage examples including team development and document processing
-- `build.sh`: Cross-compilation automation for Linux/macOS/Windows
-- `bin/`: Platform-specific binaries
-- `breeze_test.go`: Integration tests (require Ollama)
-
-## Common Patterns to Follow
-
-### When Adding New Features
-1. Add to `breeze.go` (single file architecture)
-2. Use functional options pattern for configuration
-3. Handle errors gracefully with user-friendly messages
-4. Update `cmd/breeze/main.go` for CLI access if needed
-5. Add example usage in `examples/` folder
-6. Consider team collaboration integration if applicable
-
-### When Modifying Core Logic
-- Preserve the 1-line API simplicity
-- Maintain minimal dependencies (Go stdlib + Ollama)
-- Test with real Ollama instance
-- Update cross-platform build compatibility
-- Consider impact on team collaboration features
-
-### When Working with Ollama Integration
-- Use direct HTTP calls (no SDK dependencies)
-- Handle connection failures gracefully
-- Support both `/api/generate` and `/api/chat` endpoints
-- Implement streaming with JSON decoder pattern
-- Auto-manage model pulling and selection
-
-### When Adding Team Collaboration Features
-- Use the `Agent` struct with Name, Role, Expertise, Personality fields
-- Implement phases with parallel execution support
-- Maintain shared knowledge across agents
-- Provide progress callbacks (`OnPhaseComplete`, `OnAgentResponse`)
-- Support both sequential and parallel execution modes
-
-## Key Files to Reference
-- `breeze.go:60-90`: Ollama auto-management and model selection
-- `breeze.go:91-130`: Core AI/generation logic with document processing
-- `breeze.go:131-170`: Chat conversation management
-- `breeze.go:220-250`: Streaming implementation with JSON decoding
-- `breeze.go:550-650`: Team collaboration framework and agent management
-- `breeze.go:900-950`: TeamDevCollab convenience function
-- `build.sh`: Cross-compilation patterns with GOOS/GOARCH
-- `examples/team_development.go`: Complete team collaboration example
-- `examples/`: Complete usage examples for all features
