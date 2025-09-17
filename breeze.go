@@ -52,12 +52,12 @@ type Option func(*RequestOptions)
 
 // RequestOptions holds configuration for AI requests
 type RequestOptions struct {
-	Model    string
-	Temp     float64
-	Stream   bool
-	Context  string
-	Docs     []string
-	Concise  bool
+	Model   string
+	Temp    float64
+	Stream  bool
+	Context string
+	Docs    []string
+	Concise bool
 }
 
 // WithModel sets the model for the request
@@ -650,7 +650,7 @@ func (c *Collaboration) runParallelPhase(phase Phase, initialPrompt string) map[
 		go func(agent Agent) {
 			defer wg.Done()
 
-			semaphore <- struct{}{} // Acquire
+			semaphore <- struct{}{}        // Acquire
 			defer func() { <-semaphore }() // Release
 
 			prompt := c.buildAgentPrompt(agent, phase, initialPrompt)
@@ -803,7 +803,7 @@ func (tc *TeamCollaboration) runTeamPhase(phase Phase, initialPrompt string) map
 		fmt.Printf("👥 %s team working...\n", team.Name)
 
 		teamResults := tc.runTeamAgents(team, phase, initialPrompt)
-		
+
 		// Merge team results
 		for agentName, response := range teamResults {
 			results[agentName] = response
@@ -820,7 +820,7 @@ func (tc *TeamCollaboration) runTeamPhase(phase Phase, initialPrompt string) map
 // runTeamAgents executes all agents in a team for a phase
 func (tc *TeamCollaboration) runTeamAgents(team Team, phase Phase, initialPrompt string) map[string]string {
 	results := make(map[string]string)
-	
+
 	if phase.IsParallel {
 		return tc.runParallelTeamAgents(team, phase, initialPrompt)
 	}
@@ -858,7 +858,7 @@ func (tc *TeamCollaboration) runParallelTeamAgents(team Team, phase Phase, initi
 		go func(agent Agent) {
 			defer wg.Done()
 
-			semaphore <- struct{}{} // Acquire
+			semaphore <- struct{}{}        // Acquire
 			defer func() { <-semaphore }() // Release
 
 			prompt := tc.buildTeamAgentPrompt(agent, team, phase, initialPrompt)

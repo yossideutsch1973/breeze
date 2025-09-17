@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+# Conventional Commits enforcement for the first line of the message.
+# Allowed types: build, chore, ci, docs, feat, fix, perf, refactor, revert, style, test
+
+msg_file="$1"
+first_line=$(head -n1 "$msg_file")
+
+# Allow merge commits and version bumps without enforcement
+if [[ "$first_line" =~ ^Merge\  ]] || [[ "$first_line" =~ ^Release\  ]] || [[ "$first_line" =~ ^v?[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+  exit 0
+fi
+
+pattern='^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\([a-z0-9_.-]+\))?!?: .+'
+
+if [[ ! "$first_line" =~ $pattern ]]; then
+  echo "\n⛔ Commit message must follow Conventional Commits:\n  <type>(<scope>)?: <subject>\n  e.g. 'feat(cli): add concise mode flag'\n  Your first line was:\n  $first_line\n" >&2
+  exit 1
+fi
+
+exit 0
+
