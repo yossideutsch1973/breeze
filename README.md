@@ -15,28 +15,98 @@ Breeze makes local LLM development a breeze! Get AI responses in **1 line of cod
 
 ### Installation
 
+#### Option 1: Python Package (pip install)
+
+```bash
+# Prerequisites: Go 1.21+ and Ollama installed
+pip install breeze-ai
+
+# Or install from source
+git clone https://github.com/yossideutsch1973/breeze.git
+cd breeze
+go build ./cmd/breeze  # Build the Go binary
+pip install -e .        # Install Python package
+```
+
+See [PYTHON_INSTALL.md](PYTHON_INSTALL.md) for detailed Python installation instructions.
+
+#### Option 2: Go Binary (native)
+
 1. Install [Ollama](https://ollama.ai)
 2. Clone this repo
 3. Build: `go build ./cmd/breeze`
 
 ### Usage
 
-```bash
+#### Python API
+
+```python
+import breeze
+
 # Simple AI query
-./breeze "Explain quantum physics"
+response = breeze.ai("Explain quantum physics")
+print(response)
 
 # Conversational AI
-./breeze chat "Hello!"
-./breeze chat "Tell me more"
+breeze.chat("Hello!")
+breeze.chat("Tell me more")
 
 # Code generation
-./breeze code "Write a Go HTTP server"
+code = breeze.code("Write a Python function")
+print(code)
 
 # Clear conversation
-./breeze clear
+breeze.clear()
+```
+
+#### Command Line (works for both pip install and Go binary)
+
+```bash
+# Simple AI query
+breeze "Explain quantum physics"
+
+# Conversational AI
+breeze chat "Hello!"
+breeze chat "Tell me more"
+
+# Code generation
+breeze code "Write a Go HTTP server"
+
+# Clear conversation
+breeze clear
 ```
 
 ## 📚 Library Usage
+
+### Python Library
+
+```python
+import breeze
+
+# Ultra-simple API
+response = breeze.ai("Explain recursion")
+print(response)
+
+# Conversational
+breeze.chat("Hello AI!")
+breeze.chat("Help me with Python")
+
+# Code-focused
+code = breeze.code("Write a factorial function")
+print(code)
+
+# Batch processing
+results = breeze.batch(["Explain AI", "Explain ML"])
+for result in results:
+    print(result)
+
+# Clear conversation
+breeze.clear()
+```
+
+Note: The Python wrapper provides basic functionality. For advanced features like streaming, document processing, and team collaboration, use the Go library directly.
+
+### Go Library
 
 ```go
 package main
