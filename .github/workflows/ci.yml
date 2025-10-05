@@ -69,7 +69,7 @@ jobs:
         fi
 
     - name: Upload coverage to artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: coverage-report
         path: coverage.out
@@ -129,7 +129,7 @@ jobs:
         GOOS=windows GOARCH=386 go build -ldflags="-s -w" -o bin/breeze-windows-386.exe ./cmd/breeze
 
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: breeze-binaries
         path: bin/
