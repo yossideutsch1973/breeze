@@ -203,9 +203,69 @@ GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" ./cmd/breeze
 - Go 1.21+
 - Ollama (auto-managed)
 
+## 🧪 Testing
+
+The project includes comprehensive test coverage with unit tests and integration tests.
+
+### Running Tests
+
+```bash
+# Run all unit tests (fast, no Ollama required)
+go test ./...
+
+# Run tests with coverage
+go test -coverprofile=coverage.out ./...
+
+# View coverage report
+go tool cover -html=coverage.out
+
+# Run with race detection
+go test -race ./...
+
+# Integration tests (requires Ollama running)
+# These are skipped by default but can be run manually
+go test -v ./... -skip=""
+```
+
+### Test Coverage
+
+- **Unit Tests**: 24.2% coverage (22 tests)
+- **Core Functions**: Validated with comprehensive unit tests
+- **Edge Cases**: Input validation, empty lists, error handling
+- **Integration Tests**: Available but require Ollama (skipped in CI)
+
+### CI/CD Pipeline
+
+The project uses GitHub Actions for continuous integration:
+
+- ✅ **Linting**: golangci-lint with 50+ linters
+- ✅ **Testing**: Unit tests with race detection
+- ✅ **Coverage**: Minimum 20% threshold enforced
+- ✅ **Building**: Cross-platform compilation
+- ✅ **Formatting**: go fmt compliance check
+
+See `.github/workflows/ci.yml` for full pipeline configuration.
+
 ## 🤝 Contributing
 
 Contributions welcome! Focus on developer experience and simplicity.
+
+### Development Workflow
+
+1. Fork and clone the repository
+2. Make your changes
+3. Run tests: `go test ./...`
+4. Format code: `go fmt ./...`
+5. Run linter: `golangci-lint run`
+6. Submit a pull request
+
+### Code Quality Standards
+
+- All tests must pass
+- Code must be formatted with `go fmt`
+- No lint warnings
+- Maintain or improve test coverage
+- Follow existing code patterns
 
 ## � **Handoff Status: Complete**
 

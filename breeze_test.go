@@ -286,6 +286,92 @@ func removeTestFile(path string) {
 	os.Remove(path)
 }
 
+func TestAI_EmptyPrompt(t *testing.T) {
+	result := AI("")
+	if !strings.Contains(result, "Error") && !strings.Contains(result, "empty") {
+		t.Errorf("Expected error for empty prompt, got: %s", result)
+	}
+}
+
+func TestChat_EmptyPrompt(t *testing.T) {
+	result := Chat("")
+	if !strings.Contains(result, "Error") && !strings.Contains(result, "empty") {
+		t.Errorf("Expected error for empty prompt, got: %s", result)
+	}
+}
+
+func TestCode_EmptyPrompt(t *testing.T) {
+	result := Code("")
+	if !strings.Contains(result, "Error") && !strings.Contains(result, "empty") {
+		t.Errorf("Expected error for empty prompt, got: %s", result)
+	}
+}
+
+func TestBatch_EmptyList(t *testing.T) {
+	results := Batch([]string{})
+	if len(results) != 0 {
+		t.Errorf("Expected empty results for empty prompts list, got %d items", len(results))
+	}
+}
+
+func TestProcessDocuments_EmptyList(t *testing.T) {
+	text, err := processDocuments([]string{})
+	if err != nil {
+		t.Errorf("processDocuments with empty list should not error: %v", err)
+	}
+	if text != "" {
+		t.Errorf("Expected empty text for empty document list, got: %s", text)
+	}
+}
+
+func TestWithTemp_Validation(t *testing.T) {
+	// Test that temperature is set correctly
+	opts := RequestOptions{}
+	WithTemp(1.0)(&opts)
+	if opts.Temp != 1.0 {
+		t.Errorf("Expected temp 1.0, got %f", opts.Temp)
+	}
+
+	// Test extreme values
+	WithTemp(0.0)(&opts)
+	if opts.Temp != 0.0 {
+		t.Errorf("Expected temp 0.0, got %f", opts.Temp)
+	}
+
+	WithTemp(2.0)(&opts)
+	if opts.Temp != 2.0 {
+		t.Errorf("Expected temp 2.0, got %f", opts.Temp)
+	}
+}
+
+func TestNewCollaboration_EmptyAgents(t *testing.T) {
+	phases := []Phase{
+		{Name: "Phase1", Description: "Test", PromptTemplate: "Test"},
+	}
+
+	collab := NewCollaboration([]Agent{}, phases)
+	if collab == nil {
+		t.Fatal("NewCollaboration should not return nil for empty agents")
+	}
+	if len(collab.Agents) != 0 {
+		t.Errorf("Expected 0 agents, got %d", len(collab.Agents))
+	}
+}
+
+func TestNewCollaboration_EmptyPhases(t *testing.T) {
+	agents := []Agent{
+		{Name: "Alice", Role: "Dev", Expertise: "Go", Personality: "friendly"},
+	}
+
+	collab := NewCollaboration(agents, []Phase{})
+	if collab == nil {
+		t.Fatal("NewCollaboration should not return nil for empty phases")
+	}
+	if len(collab.Phases) != 0 {
+		t.Errorf("Expected 0 phases, got %d", len(collab.Phases))
+	}
+}
+
 // Integration tests that require Ollama
 
 func TestAI(t *testing.T) {

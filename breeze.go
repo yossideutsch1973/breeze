@@ -269,6 +269,10 @@ func processDocuments(filePaths []string) (string, error) {
 
 // ai generates a response for a single prompt
 func AI(prompt string, opts ...Option) string {
+	if strings.TrimSpace(prompt) == "" {
+		return "Error: prompt cannot be empty"
+	}
+
 	options := RequestOptions{
 		Model:  defaultClient.model,
 		Temp:   0.7,
@@ -356,6 +360,10 @@ func AI(prompt string, opts ...Option) string {
 
 // chat maintains conversation context
 func Chat(prompt string, opts ...Option) string {
+	if strings.TrimSpace(prompt) == "" {
+		return "Error: prompt cannot be empty"
+	}
+
 	options := RequestOptions{
 		Model:  defaultClient.model,
 		Temp:   0.7,
@@ -445,6 +453,10 @@ func Chat(prompt string, opts ...Option) string {
 
 // code is optimized for code generation
 func Code(prompt string, opts ...Option) string {
+	if strings.TrimSpace(prompt) == "" {
+		return "Error: prompt cannot be empty"
+	}
+
 	// Use codellama if available, fallback to default
 	model := "codellama"
 	if !isModelAvailable(model) {
@@ -567,6 +579,10 @@ func Stream(prompt string, fn StreamFunc, opts ...Option) {
 
 // Batch processes multiple prompts concurrently
 func Batch(prompts []string, opts ...Option) []string {
+	if len(prompts) == 0 {
+		return []string{}
+	}
+
 	results := make([]string, len(prompts))
 	var wg sync.WaitGroup
 
