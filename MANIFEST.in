@@ -1,0 +1,7 @@
+include README.md
+include LICENSE
+include breeze
+include breeze.exe
+recursive-include python *.py
+global-exclude __pycache__
+global-exclude *.py[co]
