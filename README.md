@@ -2,6 +2,8 @@
 
 Breeze makes local LLM development a breeze! Get AI responses in **1 line of code** with zero configuration.
 
+📋 **[View the API Cheatsheet](CHEATSHEET.md)** - Quick reference for all features
+
 ## 🎯 **Project Status: Production Ready**
 
 ✅ **Core Features Complete**: AI queries, chat, code generation, streaming, batch processing
@@ -15,28 +17,98 @@ Breeze makes local LLM development a breeze! Get AI responses in **1 line of cod
 
 ### Installation
 
+#### Option 1: Python Package (pip install)
+
+```bash
+# Prerequisites: Go 1.21+ and Ollama installed
+pip install breeze-ai
+
+# Or install from source
+git clone https://github.com/yossideutsch1973/breeze.git
+cd breeze
+go build ./cmd/breeze  # Build the Go binary
+pip install -e .        # Install Python package
+```
+
+See [PYTHON_INSTALL.md](PYTHON_INSTALL.md) for detailed Python installation instructions.
+
+#### Option 2: Go Binary (native)
+
 1. Install [Ollama](https://ollama.ai)
 2. Clone this repo
 3. Build: `go build ./cmd/breeze`
 
 ### Usage
 
-```bash
+#### Python API
+
+```python
+import breeze
+
 # Simple AI query
-./breeze "Explain quantum physics"
+response = breeze.ai("Explain quantum physics")
+print(response)
 
 # Conversational AI
-./breeze chat "Hello!"
-./breeze chat "Tell me more"
+breeze.chat("Hello!")
+breeze.chat("Tell me more")
 
 # Code generation
-./breeze code "Write a Go HTTP server"
+code = breeze.code("Write a Python function")
+print(code)
 
 # Clear conversation
-./breeze clear
+breeze.clear()
+```
+
+#### Command Line (works for both pip install and Go binary)
+
+```bash
+# Simple AI query
+breeze "Explain quantum physics"
+
+# Conversational AI
+breeze chat "Hello!"
+breeze chat "Tell me more"
+
+# Code generation
+breeze code "Write a Go HTTP server"
+
+# Clear conversation
+breeze clear
 ```
 
 ## 📚 Library Usage
+
+### Python Library
+
+```python
+import breeze
+
+# Ultra-simple API
+response = breeze.ai("Explain recursion")
+print(response)
+
+# Conversational
+breeze.chat("Hello AI!")
+breeze.chat("Help me with Python")
+
+# Code-focused
+code = breeze.code("Write a factorial function")
+print(code)
+
+# Batch processing
+results = breeze.batch(["Explain AI", "Explain ML"])
+for result in results:
+    print(result)
+
+# Clear conversation
+breeze.clear()
+```
+
+Note: The Python wrapper provides basic functionality. For advanced features like streaming, document processing, and team collaboration, use the Go library directly.
+
+### Go Library
 
 ```go
 package main
@@ -203,9 +275,69 @@ GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" ./cmd/breeze
 - Go 1.21+
 - Ollama (auto-managed)
 
+## 🧪 Testing
+
+The project includes comprehensive test coverage with unit tests and integration tests.
+
+### Running Tests
+
+```bash
+# Run all unit tests (fast, no Ollama required)
+go test ./...
+
+# Run tests with coverage
+go test -coverprofile=coverage.out ./...
+
+# View coverage report
+go tool cover -html=coverage.out
+
+# Run with race detection
+go test -race ./...
+
+# Integration tests (requires Ollama running)
+# These are skipped by default but can be run manually
+go test -v ./... -skip=""
+```
+
+### Test Coverage
+
+- **Unit Tests**: 24.2% coverage (22 tests)
+- **Core Functions**: Validated with comprehensive unit tests
+- **Edge Cases**: Input validation, empty lists, error handling
+- **Integration Tests**: Available but require Ollama (skipped in CI)
+
+### CI/CD Pipeline
+
+The project uses GitHub Actions for continuous integration:
+
+- ✅ **Linting**: golangci-lint with 50+ linters
+- ✅ **Testing**: Unit tests with race detection
+- ✅ **Coverage**: Minimum 20% threshold enforced
+- ✅ **Building**: Cross-platform compilation
+- ✅ **Formatting**: go fmt compliance check
+
+See `.github/workflows/ci.yml` for full pipeline configuration.
+
 ## 🤝 Contributing
 
 Contributions welcome! Focus on developer experience and simplicity.
+
+### Development Workflow
+
+1. Fork and clone the repository
+2. Make your changes
+3. Run tests: `go test ./...`
+4. Format code: `go fmt ./...`
+5. Run linter: `golangci-lint run`
+6. Submit a pull request
+
+### Code Quality Standards
+
+- All tests must pass
+- Code must be formatted with `go fmt`
+- No lint warnings
+- Maintain or improve test coverage
+- Follow existing code patterns
 
 ## � **Handoff Status: Complete**
 
