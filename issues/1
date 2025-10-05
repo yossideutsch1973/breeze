@@ -1,0 +1,18 @@
+### CI Job Failure Issue
+
+#### Description
+We are experiencing build errors in the Continuous Integration (CI) job for the repository. The following symbols are reported as undefined in the file `internal/examples/funcs/collaboration_methods_test.go`:
+- QuickParallel
+- QuickPeerReview
+- QuickConsensus
+- BuildAgentPrompt
+- NewPhase
+- WithMethod
+
+Additionally, there is a missing dependency on Ollama that is required for some tests to run successfully.
+
+#### Reference
+Please refer to the CI job for more details: [Job Reference](https://github.com/yossideutsch1973/breeze/actions/runs/18259670969/job/51985905100?pr=1) (ref: 11d9947dbe7c1c43f7f9799b1cc09642361b389a)
+
+#### Request
+We kindly request assistance in resolving these issues. If you have any code suggestions or fixes that could help restore the CI to a passing state, it would be greatly appreciated!
