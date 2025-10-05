@@ -340,10 +340,18 @@ func AI(prompt string, opts ...Option) string {
 	}
 
 	// Regular non-streaming response
-	body, _ := io.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return fmt.Sprintf("Error reading response: %v", err)
+	}
 	var result map[string]interface{}
-	json.Unmarshal(body, &result)
-	return result["response"].(string)
+	if err := json.Unmarshal(body, &result); err != nil {
+		return fmt.Sprintf("Error parsing response: %v", err)
+	}
+	if response, ok := result["response"].(string); ok {
+		return response
+	}
+	return "Error: unexpected response format"
 }
 
 // chat maintains conversation context
@@ -417,14 +425,22 @@ func Chat(prompt string, opts ...Option) string {
 	}
 
 	// Regular non-streaming chat response
-	body, _ := io.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return fmt.Sprintf("Error reading response: %v", err)
+	}
 	var result map[string]interface{}
-	json.Unmarshal(body, &result)
+	if err := json.Unmarshal(body, &result); err != nil {
+		return fmt.Sprintf("Error parsing response: %v", err)
+	}
 
-	response := result["message"].(map[string]interface{})["content"].(string)
-	defaultClient.messages = append(defaultClient.messages, Message{Role: "assistant", Content: response})
-
-	return response
+	if message, ok := result["message"].(map[string]interface{}); ok {
+		if content, ok := message["content"].(string); ok {
+			defaultClient.messages = append(defaultClient.messages, Message{Role: "assistant", Content: content})
+			return content
+		}
+	}
+	return "Error: unexpected response format"
 }
 
 // code is optimized for code generation
@@ -446,13 +462,26 @@ func isModelAvailable(model string) bool {
 	}
 	defer resp.Body.Close()
 
-	body, _ := io.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return false
+	}
 	var result map[string]interface{}
-	json.Unmarshal(body, &result)
+	if err := json.Unmarshal(body, &result); err != nil {
+		return false
+	}
 
-	models := result["models"].([]interface{})
+	models, ok := result["models"].([]interface{})
+	if !ok {
+		return false
+	}
 	for _, m := range models {
-		if m.(map[string]interface{})["name"].(string) == model {
+		modelMap, ok := m.(map[string]interface{})
+		if !ok {
+			continue
+		}
+		modelName, ok := modelMap["name"].(string)
+		if ok && modelName == model {
 			return true
 		}
 	}
@@ -539,13 +568,17 @@ func Stream(prompt string, fn StreamFunc, opts ...Option) {
 // Batch processes multiple prompts concurrently
 func Batch(prompts []string, opts ...Option) []string {
 	results := make([]string, len(prompts))
+	var wg sync.WaitGroup
+
 	for i, prompt := range prompts {
+		wg.Add(1)
 		go func(idx int, p string) {
+			defer wg.Done()
 			results[idx] = AI(p, opts...)
 		}(i, prompt)
 	}
-	// Wait for all to complete (simple implementation)
-	time.Sleep(5 * time.Second) // TODO: better synchronization
+
+	wg.Wait()
 	return results
 }
 
