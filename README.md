@@ -2,6 +2,8 @@
 
 Breeze makes local LLM development a breeze! Get AI responses in **1 line of code** with zero configuration.
 
+📋 **[View the API Cheatsheet](CHEATSHEET.md)** - Quick reference for all features
+
 ## 🎯 **Project Status: Production Ready**
 
 ✅ **Core Features Complete**: AI queries, chat, code generation, streaming, batch processing
