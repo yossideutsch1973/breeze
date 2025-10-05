@@ -28,6 +28,12 @@ go build ./cmd/breeze
 pip install -e .
 ```
 
+**Note**: If you encounter network issues during build, you can build without isolation:
+```bash
+python -m build --no-isolation
+pip install dist/breeze_ai-2.0.0-py3-none-any.whl
+```
+
 #### Option 2: Install from PyPI (when published)
 
 ```bash
