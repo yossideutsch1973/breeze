@@ -26,27 +26,27 @@ Consider: Advanced interpolation, frequency domain methods, optimization-based r
 	// Define collaborative agents
 	agents := []breeze.Agent{
 		{
-			Name:       "Dr. Elena Vasquez",
-			Role:       "Applied Mathematician",
-			Expertise:  "signal processing and interpolation theory",
+			Name:        "Dr. Elena Vasquez",
+			Role:        "Applied Mathematician",
+			Expertise:   "signal processing and interpolation theory",
 			Personality: "rigorous and detail-oriented, always grounding solutions in mathematical theory",
 		},
 		{
-			Name:       "Prof. Marcus Chen",
-			Role:       "Harmonic Analyst",
-			Expertise:  "Fourier analysis and wavelet theory",
+			Name:        "Prof. Marcus Chen",
+			Role:        "Harmonic Analyst",
+			Expertise:   "Fourier analysis and wavelet theory",
 			Personality: "deeply theoretical, passionate about frequency domain methods",
 		},
 		{
-			Name:       "Dr. Sofia Patel",
-			Role:       "Computational Mathematician",
-			Expertise:  "numerical algorithms and optimization",
+			Name:        "Dr. Sofia Patel",
+			Role:        "Computational Mathematician",
+			Expertise:   "numerical algorithms and optimization",
 			Personality: "practical and implementation-focused, always considering computational efficiency",
 		},
 		{
-			Name:       "Prof. David Kim",
-			Role:       "Information Theorist",
-			Expertise:  "sampling theory and reconstruction algorithms",
+			Name:        "Prof. David Kim",
+			Role:        "Information Theorist",
+			Expertise:   "sampling theory and reconstruction algorithms",
 			Personality: "strategic thinker, always considering fundamental limits and optimality",
 		},
 	}
@@ -82,8 +82,8 @@ Consider: Advanced interpolation, frequency domain methods, optimization-based r
 			MaxConcurrency: 4,
 		},
 		{
-			Name:           "Final Synthesis",
-			Description:    "Creating comprehensive summary document",
+			Name:        "Final Synthesis",
+			Description: "Creating comprehensive summary document",
 			PromptTemplate: `Synthesize all contributions into a complete super-resolution algorithm including:
 - Complete algorithmic description with formulas
 - Theoretical foundations and convergence proofs

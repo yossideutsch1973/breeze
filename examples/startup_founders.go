@@ -17,27 +17,27 @@ func main() {
 	// Define collaborative agents
 	agents := []breeze.Agent{
 		{
-			Name:       "Alex Chen",
-			Role:       "CTO",
-			Expertise:  "technical architecture and scalability",
+			Name:        "Alex Chen",
+			Role:        "CTO",
+			Expertise:   "technical architecture and scalability",
 			Personality: "technical and pragmatic, always focused on building robust systems",
 		},
 		{
-			Name:       "Sarah Johnson",
-			Role:       "CEO",
-			Expertise:  "business strategy and market analysis",
+			Name:        "Sarah Johnson",
+			Role:        "CEO",
+			Expertise:   "business strategy and market analysis",
 			Personality: "strategic and visionary, always thinking about market opportunities",
 		},
 		{
-			Name:       "Marcus Rodriguez",
-			Role:       "CPO",
-			Expertise:  "product design and user experience",
+			Name:        "Marcus Rodriguez",
+			Role:        "CPO",
+			Expertise:   "product design and user experience",
 			Personality: "user-centric and creative, always designing for the customer",
 		},
 		{
-			Name:       "Dr. Emily Watson",
-			Role:       "Chief Scientist",
-			Expertise:  "AI/ML innovation and research",
+			Name:        "Dr. Emily Watson",
+			Role:        "Chief Scientist",
+			Expertise:   "AI/ML innovation and research",
 			Personality: "innovative and research-driven, always pushing technological boundaries",
 		},
 	}
