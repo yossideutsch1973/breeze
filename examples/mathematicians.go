@@ -23,27 +23,27 @@ This is a functional equation problem requiring multiple mathematical approaches
 	// Define collaborative agents
 	agents := []breeze.Agent{
 		{
-			Name:       "Dr. Elena Vasquez",
-			Role:       "Algebraist",
-			Expertise:  "algebraic structures and equation solving",
+			Name:        "Dr. Elena Vasquez",
+			Role:        "Algebraist",
+			Expertise:   "algebraic structures and equation solving",
 			Personality: "rigorous and systematic, always seeking complete classifications",
 		},
 		{
-			Name:       "Prof. Marcus Chen",
-			Role:       "Analyst",
-			Expertise:  "real and complex analysis",
+			Name:        "Prof. Marcus Chen",
+			Role:        "Analyst",
+			Expertise:   "real and complex analysis",
 			Personality: "deeply theoretical, passionate about continuity and convergence",
 		},
 		{
-			Name:       "Dr. Sofia Patel",
-			Role:       "Topologist",
-			Expertise:  "topological spaces and continuity",
+			Name:        "Dr. Sofia Patel",
+			Role:        "Topologist",
+			Expertise:   "topological spaces and continuity",
 			Personality: "intuitive and geometric, always thinking about spaces and mappings",
 		},
 		{
-			Name:       "Prof. David Kim",
-			Role:       "Number Theorist",
-			Expertise:  "Diophantine equations and modular arithmetic",
+			Name:        "Prof. David Kim",
+			Role:        "Number Theorist",
+			Expertise:   "Diophantine equations and modular arithmetic",
 			Personality: "creative and pattern-seeking, always looking for elegant solutions",
 		},
 	}
@@ -65,8 +65,8 @@ This is a functional equation problem requiring multiple mathematical approaches
 			MaxConcurrency: 4,
 		},
 		{
-			Name:           "Final Synthesis",
-			Description:    "Synthesizing all contributions into a complete mathematical solution",
+			Name:        "Final Synthesis",
+			Description: "Synthesizing all contributions into a complete mathematical solution",
 			PromptTemplate: `Synthesize all mathematical contributions into a complete, rigorous proof for this functional equation.
 
 Create a comprehensive mathematical solution including:
