@@ -17,21 +17,21 @@ func main() {
 	// Define collaborative agents
 	agents := []breeze.Agent{
 		{
-			Name:       "Lyricist",
-			Role:       "Creative Poet",
-			Expertise:  "song lyrics and poetic structure",
+			Name:        "Lyricist",
+			Role:        "Creative Poet",
+			Expertise:   "song lyrics and poetic structure",
 			Personality: "playful and creative, always finding the humor in everyday situations",
 		},
 		{
-			Name:       "Composer",
-			Role:       "Music Theorist",
-			Expertise:  "rhythm, rhyme, and musical structure",
+			Name:        "Composer",
+			Role:        "Music Theorist",
+			Expertise:   "rhythm, rhyme, and musical structure",
 			Personality: "melodic and structured, ensuring the song flows beautifully",
 		},
 		{
-			Name:       "Critic",
-			Role:       "Entertainment Expert",
-			Expertise:  "humor and audience engagement",
+			Name:        "Critic",
+			Role:        "Entertainment Expert",
+			Expertise:   "humor and audience engagement",
 			Personality: "witty and constructive, always improving the fun factor",
 		},
 	}

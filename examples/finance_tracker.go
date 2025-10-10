@@ -116,9 +116,9 @@ func getDashboard(w http.ResponseWriter, r *http.Request) {
 	}
 
 	dashboard := map[string]interface{}{
-		"total":     total,
+		"total":      total,
 		"categories": categoryTotals,
-		"month":    time.Now().Format("2006-01"),
+		"month":      time.Now().Format("2006-01"),
 	}
 
 	w.Header().Set("Content-Type", "application/json")
