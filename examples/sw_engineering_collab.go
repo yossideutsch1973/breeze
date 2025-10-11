@@ -60,7 +60,7 @@ func (sec *SWEngineeringCollab) Run() error {
 	currentStep := 0
 
 	// Phase 1: Each agent does their work
-	fmt.Println("🚀 Starting SW Engineering Team Collaboration")
+	fmt.Println("Starting software engineering collaboration")
 	fmt.Println("📋 Phase 1: Individual Implementation")
 	sec.updateProgress(currentStep, totalSteps, "Individual Work")
 
@@ -118,7 +118,7 @@ func (sec *SWEngineeringCollab) Run() error {
 		return fmt.Errorf("failed to save report: %v", err)
 	}
 
-	fmt.Printf("\n✅ Collaboration Complete! Report saved to: sw_team_report_%s.md\n", time.Now().Format("2006-01-02_15-04-05"))
+	fmt.Printf("\nCollaboration complete. Report saved to: sw_team_report_%s.md\n", time.Now().Format("2006-01-02_15-04-05"))
 	return nil
 }
 

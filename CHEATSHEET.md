@@ -4,7 +4,7 @@ Quick reference guide for Breeze - organized by what you want to achieve.
 
 ---
 
-## 🚀 Basic AI Queries
+## Basic AI Queries
 
 ### Simple one-time question
 ```go
@@ -427,3 +427,8 @@ Check out `/examples` for complete working examples:
 - **GitHub**: https://github.com/yossideutsch1973/breeze
 - **Full README**: [README.md](README.md)
 - **License**: MIT
+
+Troubleshooting
+1. **Ollama must be running**: start with `ollama serve`.
+2. **Model availability**: use `ollama list` to confirm the model is downloaded.
+3. **Python wrapper**: use `pip install breeze-ai` to install the wrapper before calling from Python.

@@ -130,18 +130,17 @@ twine upload dist/*
 
 ## Limitations
 
-The Python wrapper provides basic functionality:
-- ✅ AI queries
-- ✅ Chat with context
-- ✅ Code generation
-- ✅ Batch processing
-- ✅ Clear history
-- ⚠️ Streaming (returns complete response, not true streaming)
-- ❌ Document processing (not exposed via CLI)
-- ❌ Team collaboration (requires Go library)
-- ❌ Advanced options (model selection, temperature, etc.)
+The Python wrapper exposes:
+- AI queries
+- Chat with short-lived context
+- Code generation helpers
+- Batch processing
+- Conversation clearing
+- Limited streaming (returns full response only)
+- No document processing or team collaboration interfaces
+- Reduced access to advanced options (model selection, temperature, etc.)
 
-For advanced features, users should use the Go library directly.
+Use the Go library for the full feature set.
 
 ## Dependencies
 
@@ -165,10 +164,10 @@ Potential enhancements:
 ## Backward Compatibility
 
 This implementation:
-- ✅ Does not modify existing Go code
-- ✅ Does not change existing CLI behavior
-- ✅ Does not affect existing Go library usage
-- ✅ Adds new Python interface as an alternative, not a replacement
+- Leaves existing Go code unchanged.
+- Maintains CLI behaviour for current users.
+- Keeps the Go library API intact.
+- Adds a Python interface as an optional entry point.
 
 ## Version
 

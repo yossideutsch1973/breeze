@@ -304,16 +304,16 @@ func (m *Monitor) CheckHealth() {
 
 ## Summary
 
-The Breeze library is production-ready with solid fundamentals. These recommendations provide a roadmap for future enhancements while maintaining the core philosophy of simplicity and ease of use.
+The Breeze library currently supports local experimentation with Ollama-backed models. The notes above outline improvements that would make the project easier to maintain and extend.
 
-**Immediate Next Steps**:
-1. Add Docker-based integration tests
-2. Add performance benchmarks
-3. Implement context.Context support
-4. Increase test coverage to 50%+
+**Immediate Next Steps**
+1. Add Docker-based integration tests for reproducibility.
+2. Capture benchmarks for long-running batch and collaboration workflows.
+3. Introduce `context.Context` support to key entry points.
+4. Continue expanding unit test coverage toward 50%.
 
-**Long-term Vision**:
-- Comprehensive plugin ecosystem
-- Cloud model support (OpenAI, Anthropic, etc.)
-- Advanced team collaboration features
-- Enterprise-ready monitoring and observability
+**Long-Term Ideas**
+- Plugin system for external tools and storage.
+- Optional support for remote model providers (OpenAI, Anthropic, etc.).
+- Richer collaboration features (role coordination, scheduling).
+- Monitoring hooks for long-running usage.

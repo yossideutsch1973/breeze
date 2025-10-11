@@ -91,10 +91,10 @@ breeze clear
 ### Python vs Go Usage
 
 The Python package is a wrapper around the Go binary and provides:
-- ✅ Simple `pip install` experience
-- ✅ Pythonic API
-- ✅ Command-line interface
-- ⚠️ Limited feature set compared to native Go library
+- Installer via `pip install`.
+- Pythonic API surface.
+- Command-line interface mirroring the Go binary.
+- Subset of features compared to the native Go library.
 
 For full features (streaming, document processing, team collaboration), use the Go library directly:
 

@@ -9,21 +9,21 @@ import (
 )
 
 func main() {
-	fmt.Println("🚀 === Team-Based Software Development Collaboration === 🚀")
+	fmt.Println("=== Team-Based Software Development Collaboration ===")
 	fmt.Println("Using Breeze's enhanced team collaboration framework!\n")
 
 	// Define SW Engineering team
 	swTeam := []breeze.Agent{
 		{
-			Name:       "Alex Chen",
-			Role:       "Senior Software Engineer",
-			Expertise:  "Go development and system design",
+			Name:        "Alex Chen",
+			Role:        "Senior Software Engineer",
+			Expertise:   "Go development and system design",
 			Personality: "pragmatic and detail-oriented, focuses on clean architecture",
 		},
 		{
-			Name:       "Maria Rodriguez",
-			Role:       "Software Engineer",
-			Expertise:  "data structures and file I/O",
+			Name:        "Maria Rodriguez",
+			Role:        "Software Engineer",
+			Expertise:   "data structures and file I/O",
 			Personality: "thorough and methodical, ensures robust implementation",
 		},
 	}
@@ -31,15 +31,15 @@ func main() {
 	// Define Testing team
 	testTeam := []breeze.Agent{
 		{
-			Name:       "David Kim",
-			Role:       "QA Engineer",
-			Expertise:  "functional testing and edge cases",
+			Name:        "David Kim",
+			Role:        "QA Engineer",
+			Expertise:   "functional testing and edge cases",
 			Personality: "critical and thorough, finds potential issues",
 		},
 		{
-			Name:       "Sarah Johnson",
-			Role:       "Test Automation Engineer",
-			Expertise:  "integration testing and validation",
+			Name:        "Sarah Johnson",
+			Role:        "Test Automation Engineer",
+			Expertise:   "integration testing and validation",
 			Personality: "systematic and precise, ensures complete functionality",
 		},
 	}

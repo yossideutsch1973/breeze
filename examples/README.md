@@ -1,6 +1,6 @@
 # Breeze Examples
 
-This folder contains example programs demonstrating Breeze's capabilities.
+This directory collects runnable examples demonstrating different collaboration patterns. Each example is intended to be small and approachable.
 
 ## Examples
 
@@ -14,14 +14,10 @@ go run main.go
 
 ### `sw_engineering_collab.go` - SW Engineering Team with Peer Review
 
-A comprehensive demonstration of **professional software engineering collaboration** with proper peer review:
-
-- **🎯 Real Peer Review System**: Each engineer does work AND reviews others' work
-- **📊 Scoring & Consolidation**: Reviews are scored (1-10) and intelligently merged
-- **📈 Progress Bar**: Clean progress indication without console spam
-- **📁 File Output Only**: Final comprehensive report saved to timestamped file
-- **👥 Homogeneous Team**: All agents are SW engineers with different specializations
-- **🔄 Structured Workflow**: Individual work → Peer review → Consolidation → Final report
+Highlights:
+- Generates a final report saved to a timestamped file.
+- Emphasises file-based outputs, not console logging.
+- Shows a review workflow across software engineering roles.
 
 ```bash
 go run sw_engineering_collab.go
@@ -29,12 +25,12 @@ go run sw_engineering_collab.go
 
 **Features:**
 
-- ✅ Progress bar (no console clutter)
-- ✅ Professional peer review process
-- ✅ Scoring system for review consolidation
-- ✅ Clean file output (no console spam)
-- ✅ Homogeneous team (all SW engineers)
-- ✅ Work + Review workflow per agent
+- Progress bar minimal console output
+- Peer review process
+- Scoring system for review consolidation
+- File output stored under `sw_team_report_*.md`
+- Homogeneous team (all software engineering roles)
+- Work plus review workflow per agent
 
 ### `qwen3_mini_agents.go` - Qwen3 Mini-Agents Swarm
 
@@ -94,9 +90,10 @@ go run songwriter.go
 
 ## Features Demonstrated
 
-- ✅ Basic AI queries
-- ✅ Conversation management
-- ✅ Model selection
-- ✅ Creative collaboration
-- ✅ Iterative improvement
-- ✅ Fun AI interactions
+What you can test quickly:
+- Basic AI queries
+- Conversation management
+- Model selection
+- Creative collaboration
+- Iterative improvement
+- Lightweight tooling exercises
