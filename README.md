@@ -312,7 +312,7 @@ The project uses GitHub Actions for continuous integration:
 
 - ✅ **Linting**: golangci-lint with 50+ linters
 - ✅ **Testing**: Unit tests with race detection
-- ✅ **Coverage**: Minimum 20% threshold enforced
+- ✅ **Coverage**: Minimum 14% threshold enforced (integration tests skipped)
 - ✅ **Building**: Cross-platform compilation
 - ✅ **Formatting**: go fmt compliance check
 
