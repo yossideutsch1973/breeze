@@ -1,5 +1,12 @@
 # Breeze v2.0 - Ultra-Concise Local LLM Library
 
+[![CI/CD Pipeline](https://github.com/yossideutsch1973/breeze/actions/workflows/ci.yml/badge.svg)](https://github.com/yossideutsch1973/breeze/actions/workflows/ci.yml)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/yossideutsch1973/breeze)](https://go.dev/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Go Report Card](https://goreportcard.com/badge/github.com/yossideutsch1973/breeze)](https://goreportcard.com/report/github.com/yossideutsch1973/breeze)
+[![PyPI](https://img.shields.io/pypi/v/breeze-ai)](https://pypi.org/project/breeze-ai/)
+[![GitHub stars](https://img.shields.io/github/stars/yossideutsch1973/breeze)](https://github.com/yossideutsch1973/breeze/stargazers)
+
 Breeze makes local LLM development a breeze! Get AI responses in **1 line of code** with zero configuration.
 
 📋 **[View the API Cheatsheet](CHEATSHEET.md)** - Quick reference for all features
