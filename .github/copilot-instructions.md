@@ -11,12 +11,22 @@ Breeze is a Go library for ultra-simple local LLM interactions via Ollama, with 
 - **Team collaboration**: Multi-agent workflows (see `TeamDevCollab`, `Phase`, and `Agent` in `breeze.go`).
 - **Minimal dependencies**: Only Go stdlib and Ollama required for core; advanced examples may use `gorilla/mux` or `go-sqlite3`.
 
+## Project Structure & Module Organization
+- `breeze.go`: core library (agents, AI, chat, code, batch).
+- `cmd/breeze/`: CLI entrypoint (`main.go`). Build target for the binary.
+- `examples/`: runnable samples (team collaboration, apps, utilities).
+- `breeze_test.go`: integration-oriented tests (skipped unless Ollama is available).
+- `bin/`: build artifacts created by `build.sh` or manual builds.
+- `go.mod`, `go.sum`: module metadata (Go 1.21).
+
 ## Developer Workflows
 - **Build**: `make build` (or `go build ./cmd/breeze`)
 - **Test**: `make test` (integration tests require Ollama running; skipped in CI)
 - **Format**: `make fmt`
+- **Vet**: `make vet`
+- **Lint**: `make lint` (uses golangci-lint)
 - **Cross-compile**: `make cross` or `./build.sh` (outputs to `bin/`)
-- **Run CLI**: `./breeze "prompt"` or `make run ARGS='chat "Hello"'`
+- **Run CLI**: `./breeze "prompt"` or `./breeze chat "Hello"` or `make run ARGS='chat "Hello"'`
 
 ## CLI & API Usage
 - CLI commands are routed in `cmd/breeze/main.go` (e.g., `chat`, `code`, `clear`, or default to `AI`).
@@ -54,6 +64,45 @@ Breeze is a Go library for ultra-simple local LLM interactions via Ollama, with 
 - Add CLI support in `cmd/breeze/main.go` if needed
 - Add usage examples in `examples/` for new features
 - Advanced dependencies (mux/sqlite3) only in examples, not core
+
+## Coding Style & Naming Conventions
+- Go formatting is canonical: run `go fmt ./...` before committing.
+- Use clear, exported names (PascalCase) for public API, unexported (camelCase) for internals.
+- Keep packages small and focused; keep CLI-only logic under `cmd/breeze`.
+- Errors: return `error` values; prefer wrapping with context via `%w`.
+- Files: `*_test.go` for tests; one responsibility per file when practical.
+
+## Testing Guidelines
+- Write table-driven tests for pure logic; mock or skip external calls.
+- Run tests selectively: `go test -run TestAI ./...`
+- Integration tests that hit Ollama should detect availability and skip when absent.
+- Add examples in `examples/` for new features to document behavior.
+- All tests must pass before committing.
+- Maintain or improve test coverage (current minimum: 14%).
+- Use race detection: `go test -race ./...`
+
+## Commit & Pull Request Guidelines
+- Conventional Commits required. Example: `feat(cli): add concise mode flag`.
+- Enable commit hook: `git config core.hooksPath .githooks` (enforces message format).
+- PRs must include: clear description, linked issue (if any), usage/output example, and test notes.
+- Keep diffs minimal and focused; update README or examples when behavior changes.
+- Code must be formatted with `go fmt`.
+- No lint warnings.
+
+## Security & Configuration Tips
+- Do not hardcode secrets or model endpoints; prefer environment variables when needed.
+- Don't commit local artifacts; only binaries produced by release workflows should live in `bin/`.
+- Validate inputs in CLI; fail fast with actionable messages.
+- Input sanitization: validate all user inputs.
+- No secrets in source code.
+
+## CI/CD Pipeline
+- **Linting**: golangci-lint with 50+ linters
+- **Testing**: Unit tests with race detection
+- **Coverage**: Minimum 14% threshold enforced (integration tests skipped in CI)
+- **Building**: Cross-platform compilation for Linux, macOS, Windows
+- **Formatting**: `go fmt` compliance check
+- See `.github/workflows/ci.yml` for full pipeline configuration
 
 ## Example Patterns
 ```go
