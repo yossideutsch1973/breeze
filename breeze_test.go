@@ -278,7 +278,7 @@ func TestExtractTextFromFile_TXT(t *testing.T) {
 
 // Helper function to create test files
 func createTestFile(path string, content []byte) error {
-	return os.WriteFile(path, content, 0644)
+	return os.WriteFile(path, content, 0o644)
 }
 
 // Helper function to remove test files
