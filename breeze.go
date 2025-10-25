@@ -34,6 +34,12 @@ import (
 	"time"
 )
 
+// Error message constants
+const (
+	errEmptyPrompt          = "Error: prompt cannot be empty"
+	errUnexpectedRespFormat = "Error: unexpected response format"
+)
+
 // Breeze represents the AI client
 type Breeze struct {
 	model     string
@@ -117,7 +123,7 @@ func init() {
 // ensureOllamaRunning checks if Ollama is running and starts it if not
 func ensureOllamaRunning() {
 	// Try to connect to Ollama
-	_, err := http.Get("http://localhost:11434/api/tags")
+	resp, err := http.Get("http://localhost:11434/api/tags")
 	if err != nil {
 		fmt.Println("Ollama not detected. Starting Ollama...")
 		cmd := exec.Command("ollama", "serve")
@@ -130,7 +136,9 @@ func ensureOllamaRunning() {
 		// Wait a bit for it to start
 		time.Sleep(2 * time.Second)
 		fmt.Println("Ollama started successfully.")
+		return
 	}
+	resp.Body.Close()
 }
 
 // extractTextFromFile extracts text content from various file formats
@@ -227,17 +235,19 @@ func extractTextFromDOCX(data []byte) (string, error) {
 	// Find all text elements
 	parts := strings.Split(content, "<w:t")
 	for _, part := range parts[1:] { // Skip first part before first <w:t>
-		if endIdx := strings.Index(part, "</w:t>"); endIdx != -1 {
-			textContent := part[:endIdx]
-			// Remove XML entities and clean up
-			textContent = strings.ReplaceAll(textContent, "&amp;", "&")
-			textContent = strings.ReplaceAll(textContent, "&lt;", "<")
-			textContent = strings.ReplaceAll(textContent, "&gt;", ">")
-			textContent = strings.ReplaceAll(textContent, "&quot;", "\"")
-			textContent = strings.ReplaceAll(textContent, "&apos;", "'")
-			text.WriteString(textContent)
-			text.WriteString(" ")
+		endIdx := strings.Index(part, "</w:t>")
+		if endIdx == -1 {
+			continue
 		}
+		textContent := part[:endIdx]
+		// Remove XML entities and clean up
+		textContent = strings.ReplaceAll(textContent, "&amp;", "&")
+		textContent = strings.ReplaceAll(textContent, "&lt;", "<")
+		textContent = strings.ReplaceAll(textContent, "&gt;", ">")
+		textContent = strings.ReplaceAll(textContent, "&quot;", "\"")
+		textContent = strings.ReplaceAll(textContent, "&apos;", "'")
+		text.WriteString(textContent)
+		text.WriteString(" ")
 	}
 
 	return strings.TrimSpace(text.String()), nil
@@ -270,7 +280,7 @@ func processDocuments(filePaths []string) (string, error) {
 // ai generates a response for a single prompt
 func AI(prompt string, opts ...Option) string {
 	if strings.TrimSpace(prompt) == "" {
-		return "Error: prompt cannot be empty"
+		return errEmptyPrompt
 	}
 
 	options := RequestOptions{
@@ -315,7 +325,10 @@ func AI(prompt string, opts ...Option) string {
 		}
 	}
 
-	jsonData, _ := json.Marshal(req)
+	jsonData, err := json.Marshal(req)
+	if err != nil {
+		return fmt.Sprintf("Error: %v", err)
+	}
 	resp, err := http.Post(defaultClient.ollamaURL+"/api/generate", "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
 		return fmt.Sprintf("Error: %v", err)
@@ -328,7 +341,7 @@ func AI(prompt string, opts ...Option) string {
 		decoder := json.NewDecoder(resp.Body)
 		for {
 			var chunk map[string]interface{}
-			if err := decoder.Decode(&chunk); err != nil {
+			if decodeErr := decoder.Decode(&chunk); decodeErr != nil {
 				break
 			}
 			if token, ok := chunk["response"].(string); ok {
@@ -355,13 +368,13 @@ func AI(prompt string, opts ...Option) string {
 	if response, ok := result["response"].(string); ok {
 		return response
 	}
-	return "Error: unexpected response format"
+	return errUnexpectedRespFormat
 }
 
 // chat maintains conversation context
 func Chat(prompt string, opts ...Option) string {
 	if strings.TrimSpace(prompt) == "" {
-		return "Error: prompt cannot be empty"
+		return errEmptyPrompt
 	}
 
 	options := RequestOptions{
@@ -401,7 +414,10 @@ func Chat(prompt string, opts ...Option) string {
 		}
 	}
 
-	jsonData, _ := json.Marshal(req)
+	jsonData, err := json.Marshal(req)
+	if err != nil {
+		return fmt.Sprintf("Error: %v", err)
+	}
 	resp, err := http.Post(defaultClient.ollamaURL+"/api/chat", "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
 		return fmt.Sprintf("Error: %v", err)
@@ -414,7 +430,7 @@ func Chat(prompt string, opts ...Option) string {
 		decoder := json.NewDecoder(resp.Body)
 		for {
 			var chunk map[string]interface{}
-			if err := decoder.Decode(&chunk); err != nil {
+			if decodeErr := decoder.Decode(&chunk); decodeErr != nil {
 				break
 			}
 			if message, ok := chunk["message"].(map[string]interface{}); ok {
@@ -448,13 +464,13 @@ func Chat(prompt string, opts ...Option) string {
 			return content
 		}
 	}
-	return "Error: unexpected response format"
+	return errUnexpectedRespFormat
 }
 
 // code is optimized for code generation
 func Code(prompt string, opts ...Option) string {
 	if strings.TrimSpace(prompt) == "" {
-		return "Error: prompt cannot be empty"
+		return errEmptyPrompt
 	}
 
 	// Use codellama if available, fallback to default
@@ -554,7 +570,11 @@ func Stream(prompt string, fn StreamFunc, opts ...Option) {
 		}
 	}
 
-	jsonData, _ := json.Marshal(req)
+	jsonData, err := json.Marshal(req)
+	if err != nil {
+		fn(fmt.Sprintf("Error: %v", err))
+		return
+	}
 	resp, err := http.Post(defaultClient.ollamaURL+"/api/generate", "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
 		fn(fmt.Sprintf("Error: %v", err))
@@ -774,7 +794,8 @@ func QuickCollab(agents []Agent, phases []string, challenge string) (map[string]
 // SaveResults automatically saves collaboration results to files
 func (c *Collaboration) SaveResults(results map[string]map[string]string, filename string) error {
 	content := c.formatResults(results)
-	return os.WriteFile(filename, []byte(content), 0644)
+	//nolint:gosec // G306: 0o644 is intentional - results are meant to be readable
+	return os.WriteFile(filename, []byte(content), 0o644)
 }
 
 // formatResults creates a nicely formatted summary of all results
