@@ -34,6 +34,13 @@ import (
 	"time"
 )
 
+// API and prompt constants
+const (
+	apiGeneratePath    = "/api/generate"
+	conciseInstruction = "Be extremely concise and brief in your response. "
+	doubleNewline      = "\n\n"
+)
+
 // Breeze represents the AI client
 type Breeze struct {
 	model     string
@@ -260,7 +267,7 @@ func processDocuments(filePaths []string) (string, error) {
 
 		allText.WriteString(fmt.Sprintf("\nFile: %s\n", filePath))
 		allText.WriteString(text)
-		allText.WriteString("\n\n")
+		allText.WriteString(doubleNewline)
 	}
 
 	allText.WriteString("--- End Document Context ---\n")
@@ -289,19 +296,19 @@ func AI(prompt string, opts ...Option) string {
 			return fmt.Sprintf("Error processing documents: %v", err)
 		}
 		if options.Context != "" {
-			options.Context = options.Context + "\n\n" + docText
+			options.Context = options.Context + doubleNewline + docText
 		} else {
 			options.Context = docText
 		}
 	}
 
 	if options.Context != "" {
-		prompt = options.Context + "\n\n" + prompt
+		prompt = options.Context + doubleNewline + prompt
 	}
 
 	// Add concise instruction if enabled
 	if options.Concise {
-		prompt = "Be extremely concise and brief in your response. " + prompt
+		prompt = conciseInstruction + prompt
 	}
 
 	req := map[string]interface{}{
@@ -316,7 +323,7 @@ func AI(prompt string, opts ...Option) string {
 	}
 
 	jsonData, _ := json.Marshal(req)
-	resp, err := http.Post(defaultClient.ollamaURL+"/api/generate", "application/json", bytes.NewBuffer(jsonData))
+	resp, err := http.Post(defaultClient.ollamaURL+apiGeneratePath, "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
 		return fmt.Sprintf("Error: %v", err)
 	}
@@ -380,12 +387,12 @@ func Chat(prompt string, opts ...Option) string {
 		if err != nil {
 			return fmt.Sprintf("Error processing documents: %v", err)
 		}
-		userMessage = docText + "\n\n" + prompt
+		userMessage = docText + doubleNewline + prompt
 	}
 
 	// Add concise instruction if enabled
 	if options.Concise {
-		userMessage = "Be extremely concise and brief in your response. " + userMessage
+		userMessage = conciseInstruction + userMessage
 	}
 
 	defaultClient.messages = append(defaultClient.messages, Message{Role: "user", Content: userMessage})
@@ -555,7 +562,7 @@ func Stream(prompt string, fn StreamFunc, opts ...Option) {
 	}
 
 	jsonData, _ := json.Marshal(req)
-	resp, err := http.Post(defaultClient.ollamaURL+"/api/generate", "application/json", bytes.NewBuffer(jsonData))
+	resp, err := http.Post(defaultClient.ollamaURL+apiGeneratePath, "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
 		fn(fmt.Sprintf("Error: %v", err))
 		return
