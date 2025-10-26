@@ -99,6 +99,13 @@ func WithConcise() Option {
 // preferredModels in order of preference
 var preferredModels = []string{"gpt-oss", "codellama", "llama2", "mistral"}
 
+const (
+	// ollamaGenerateEndpoint is the Ollama API endpoint for generation
+	ollamaGenerateEndpoint = "/api/generate"
+	// concisePromptPrefix is the prefix added to prompts when concise mode is enabled
+	concisePromptPrefix = "Be extremely concise and brief in your response. "
+)
+
 // defaultClient is the global client
 var defaultClient *Breeze
 
@@ -301,7 +308,7 @@ func AI(prompt string, opts ...Option) string {
 
 	// Add concise instruction if enabled
 	if options.Concise {
-		prompt = "Be extremely concise and brief in your response. " + prompt
+		prompt = concisePromptPrefix + prompt
 	}
 
 	req := map[string]interface{}{
@@ -316,7 +323,7 @@ func AI(prompt string, opts ...Option) string {
 	}
 
 	jsonData, _ := json.Marshal(req)
-	resp, err := http.Post(defaultClient.ollamaURL+"/api/generate", "application/json", bytes.NewBuffer(jsonData))
+	resp, err := http.Post(defaultClient.ollamaURL+ollamaGenerateEndpoint, "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
 		return fmt.Sprintf("Error: %v", err)
 	}
@@ -385,7 +392,7 @@ func Chat(prompt string, opts ...Option) string {
 
 	// Add concise instruction if enabled
 	if options.Concise {
-		userMessage = "Be extremely concise and brief in your response. " + userMessage
+		userMessage = concisePromptPrefix + userMessage
 	}
 
 	defaultClient.messages = append(defaultClient.messages, Message{Role: "user", Content: userMessage})
@@ -555,7 +562,7 @@ func Stream(prompt string, fn StreamFunc, opts ...Option) {
 	}
 
 	jsonData, _ := json.Marshal(req)
-	resp, err := http.Post(defaultClient.ollamaURL+"/api/generate", "application/json", bytes.NewBuffer(jsonData))
+	resp, err := http.Post(defaultClient.ollamaURL+ollamaGenerateEndpoint, "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
 		fn(fmt.Sprintf("Error: %v", err))
 		return
