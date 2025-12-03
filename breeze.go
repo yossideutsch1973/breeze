@@ -34,6 +34,10 @@ import (
 	"time"
 )
 
+const (
+	apiGenerateEndpoint = "/api/generate"
+)
+
 // Breeze represents the AI client
 type Breeze struct {
 	model     string
@@ -316,7 +320,7 @@ func AI(prompt string, opts ...Option) string {
 	}
 
 	jsonData, _ := json.Marshal(req)
-	resp, err := http.Post(defaultClient.ollamaURL+"/api/generate", "application/json", bytes.NewBuffer(jsonData))
+	resp, err := http.Post(defaultClient.ollamaURL+apiGenerateEndpoint, "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
 		return fmt.Sprintf("Error: %v", err)
 	}
@@ -555,7 +559,7 @@ func Stream(prompt string, fn StreamFunc, opts ...Option) {
 	}
 
 	jsonData, _ := json.Marshal(req)
-	resp, err := http.Post(defaultClient.ollamaURL+"/api/generate", "application/json", bytes.NewBuffer(jsonData))
+	resp, err := http.Post(defaultClient.ollamaURL+apiGenerateEndpoint, "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
 		fn(fmt.Sprintf("Error: %v", err))
 		return
